@@ -1,0 +1,8 @@
+resolver: lts-18.28
+
+packages:
+- . 
+
+extra-deps:
+- git: https://github.com/kztk-m/EbU.git
+  commit: a7efde943ea0e6194e260b70e7d2cb212f9eaa23
