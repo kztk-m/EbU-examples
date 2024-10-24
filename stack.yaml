@@ -5,4 +5,4 @@ packages:
 
 extra-deps:
 - git: https://github.com/kztk-m/EbU.git
-  commit: a7efde943ea0e6194e260b70e7d2cb212f9eaa23
+  commit: 16a69b6da2e58a90308a20387696b1fd1383d7b9
