@@ -27,6 +27,7 @@ Example use of Embedding by Unembedding: the lens language HOBiT.
 module Unembedding.Examples.ELens where
 
 import           Control.Category
+import           Control.Monad          (unless, (>=>))
 import           Control.Monad.Except
 import           Control.Monad.Identity (Identity (Identity))
 import qualified Control.Monad.State    as State
@@ -36,12 +37,12 @@ import qualified Data.Foldable
 import           Data.Kind              (Type)
 import           Data.Proxy             (Proxy (Proxy))
 import           Prelude                hiding (LT, id, (.))
-import           Unembedding.Env
+import qualified Unembedding            as UE
 import           Unembedding            (Dim (..), EnvI (..), OfLength (..),
                                          Repeat, SNat (..), Sig2 (..), TEnv,
                                          TermRep (..), URep (..),
                                          Variables (..), Vec (..))
-import qualified Unembedding            as UE
+import           Unembedding.Env
 
 type Err = Either String
 
