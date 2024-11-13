@@ -38,10 +38,10 @@ import           Data.Kind              (Type)
 import           Data.Proxy             (Proxy (Proxy))
 import           Prelude                hiding (LT, id, (.))
 import qualified Unembedding            as UE
-import           Unembedding            (Dim (..), EnvI (..), OfLength (..),
-                                         Repeat, SNat (..), Sig2 (..), TEnv,
-                                         TermRep (..), URep (..),
-                                         Variables (..), Vec (..))
+import           Unembedding            (Dim (..), EnvI (..), LiftVariables,
+                                         OfLength (..), Repeat, SNat (..),
+                                         Sig2 (..), TEnv, TermRep (..),
+                                         URep (..), Variables (..), Vec (..))
 import           Unembedding.Env
 
 type Err = Either String
@@ -125,6 +125,9 @@ instance Variables LensT where
   var = LT varLens
   weaken (LT l) = LT $ weakenLens l
 
+instance LiftVariables LensT LensT where
+  liftVar = id
+
 unLensTdot :: (forall as. TEnv as -> LensT as a ) -> (forall as. TEnv as -> Lens (VEnv as) a)
 unLensTdot f e = unLensT (f e)
 
@@ -151,7 +154,7 @@ v2l VecNil         = []
 v2l (VecCons x xs) = x : v2l xs
 
 
-runOpenL :: Variables sem =>
+runOpenL :: LiftVariables semV sem =>
   ([EnvI sem a] -> EnvI sem b) -> [proxy] -> ((forall n. SNat n -> sem (Repeat a n) b -> r) -> r)
 runOpenL f xs k = l2snat xs $ \sn -> k sn $ UE.runOpenV sn (\as -> f (v2l as))
 

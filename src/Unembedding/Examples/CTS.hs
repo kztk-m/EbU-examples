@@ -17,22 +17,24 @@ transfer style iteration on the incremental lambda calculus.
 {-# LANGUAGE TypeOperators              #-}
 {-# LANGUAGE UndecidableInstances       #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
 
 module Unembedding.Examples.CTS where
 
-import           Data.Kind     (Type)
-import           Prelude       hiding (concat, concatMap, map)
+import           Data.Kind       (Type)
+import           Prelude         hiding (concat, concatMap, map)
 
-import           Data.Sequence (Seq, (><))
-import qualified Data.Sequence as S
+import           Data.Sequence   (Seq, (><))
+import qualified Data.Sequence   as S
 
 import qualified Control.Monad
-import           Data.Foldable (toList)
-import           Data.List     (foldl')
-import           Data.Monoid   (Sum (Sum))
+import           Data.Foldable   (toList)
+import           Data.List       (foldl')
+import           Data.Monoid     (Sum (Sum))
+import qualified Unembedding     as UE
+import           Unembedding     (Dim (..), EnvI (..), LiftVariables,
+                                  Variables (..), ol0, ol1)
 import           Unembedding.Env
-import           Unembedding   (Dim (..), EnvI (..), Variables (..), ol0, ol1)
-import qualified Unembedding   as UE
 
 -- Change Structures:
 -- A key part of incremental computation is representing changes in data.
@@ -121,6 +123,9 @@ instance Variables CTS where
     where
       f' (ECons _ e) = f e
       tr' (ECons _ de, c) = tr (de, c)
+
+instance LiftVariables CTS CTS where
+  liftVar = id
 
 -- The purpose of this term is to be able to run a CTS term without the existentially qualified c
 newtype Interact a b = I { runInteract :: a -> (b , Interact a b) }

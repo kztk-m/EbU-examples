@@ -8,36 +8,38 @@ cache transfer style
 
 -}
 
-{-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE DerivingStrategies   #-}
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE GADTs                #-}
-{-# LANGUAGE InstanceSigs         #-}
-{-# LANGUAGE TypeFamilies         #-}
-{-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE DerivingStrategies    #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE InstanceSigs          #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Unembedding.Examples.ILC where
 
 -- base
-import           Control.Monad (join)
-import           Data.Foldable (toList)
+import           Control.Monad            (join)
+import           Data.Foldable            (toList)
 
 -- containers
-import           Data.Sequence (Seq)
-import qualified Data.Sequence as S
+import           Data.Sequence            (Seq)
+import qualified Data.Sequence            as S
 
 -- unembedding tooling
+import qualified Unembedding              as UE
+import           Unembedding              (Dim (..), EnvI (..), LiftVariables,
+                                           Variables (..), ol0, ol1)
 import           Unembedding.Env
-import           Unembedding   (Dim (..), EnvI (..), Variables (..), ol0,
-                                ol1)
-import qualified Unembedding   as UE
 
 -- We will reuse the change structure from CTS.
-import           Unembedding.Examples.CTS           (ADSeq (..), DEnv, Delta (..), Diff (..),
-                                PackedDiff (..), PackedDiffDelta (..), VEnv)
+import           Unembedding.Examples.CTS (ADSeq (..), DEnv, Delta (..),
+                                           Diff (..), PackedDiff (..),
+                                           PackedDiffDelta (..), VEnv)
 
 -- Unembedding recipe:
 -- -------------------
@@ -76,6 +78,9 @@ instance Variables ILC where
     where
       s' (ECons _ env) = s env
       d' (ECons _ venv) (ECons _ denv) = d venv denv
+
+instance LiftVariables ILC ILC where
+  liftVar = id
 
 -- Step 2: Prepare semantic functions for each construct
 -- -----------------------------------------------------------------------------

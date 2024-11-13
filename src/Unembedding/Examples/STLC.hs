@@ -7,18 +7,19 @@ to unembed a language.
 
 -}
 
-{-# LANGUAGE DataKinds            #-}
-{-# LANGUAGE DerivingStrategies   #-}
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE GADTs                #-}
-{-# LANGUAGE InstanceSigs         #-}
-{-# LANGUAGE RankNTypes           #-}
-{-# LANGUAGE TypeFamilies         #-}
-{-# LANGUAGE TypeOperators        #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE DerivingStrategies    #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE InstanceSigs          #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 {-# OPTIONS_GHC -Wno-unused-imports #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 
 module Unembedding.Examples.STLC where
 
@@ -32,10 +33,10 @@ import           Data.Sequence         (Seq)
 import qualified Data.Sequence         as S
 
 -- unembedding tooling
-import           Unembedding.Env
-import           Unembedding           (Dim (..), EnvI (..), TEnv,
-                                        Variables (..), ol0, ol1, runOpen)
 import qualified Unembedding           as UE
+import           Unembedding           (Dim (..), EnvI (..), LiftVariables,
+                                        TEnv, Variables (..), ol0, ol1, runOpen)
+import           Unembedding.Env
 
 -- Unembedding recipe:
 -- -------------------
@@ -65,6 +66,9 @@ instance Variables STLC where
   var = Sim (\(ECons (Identity x) _) -> x)
   weaken :: STLC as a -> STLC (b ': as) a
   weaken (Sim f) = Sim (\(ECons _ env) -> f env)
+
+instance LiftVariables STLC STLC where
+  liftVar = id
 
 -- Step 2: Prepare semantic functions for each construct
 -- -----------------------------------------------------------------------------
