@@ -1,6 +1,6 @@
 cabal-version:      2.4
 name:               embedding-by-unembedding-examples
-version:            0.2.1
+version:            0.5.0
 
 license:            BSD-3-Clause
 author:             Kazutaka Matsuda, Samantha Frohlich
@@ -8,10 +8,11 @@ maintainer:         kztk@tohoku.ac.jp
 
 common deps
     build-depends:
-        base >= 4.12 && <4.20,
+        base >= 4.12 && < 5,
         mtl ^>= 2.2 || ^>= 2.3,
         containers ^>= 0.6,
-        embedding-by-unembedding 
+        embedding-by-unembedding ^>= 0.5, 
+        defun-core
 
     default-language: Haskell2010
     ghc-options:
@@ -42,6 +43,7 @@ library
         Unembedding.Examples.ELens
         Unembedding.Examples.ILC
         Unembedding.Examples.STLC
+        Unembedding.Examples.Forall
 
     hs-source-dirs:   src
     default-language: Haskell2010
