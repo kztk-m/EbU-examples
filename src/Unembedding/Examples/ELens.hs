@@ -125,8 +125,7 @@ instance Variables LensT where
   var = LT varLens
   weaken (LT l) = LT $ weakenLens l
 
-instance LiftVariables LensT LensT where
-  liftVar = id
+instance LiftVariables LensT where
 
 unLensTdot :: (forall as. TEnv as -> LensT as a ) -> (forall as. TEnv as -> Lens (VEnv as) a)
 unLensTdot f e = unLensT (f e)
@@ -154,7 +153,7 @@ v2l VecNil         = []
 v2l (VecCons x xs) = x : v2l xs
 
 
-runOpenL :: LiftVariables semV sem =>
+runOpenL :: LiftVariables sem =>
   ([EnvI sem a] -> EnvI sem b) -> [proxy] -> ((forall n. SNat n -> sem (Repeat a n) b -> r) -> r)
 runOpenL f xs k = l2snat xs $ \sn -> k sn $ UE.runOpenV sn (\as -> f (v2l as))
 

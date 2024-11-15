@@ -79,8 +79,7 @@ instance Variables ILC where
       s' (ECons _ env) = s env
       d' (ECons _ venv) (ECons _ denv) = d venv denv
 
-instance LiftVariables ILC ILC where
-  liftVar = id
+instance LiftVariables ILC
 
 -- Step 2: Prepare semantic functions for each construct
 -- -----------------------------------------------------------------------------

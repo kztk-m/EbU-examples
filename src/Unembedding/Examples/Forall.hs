@@ -28,6 +28,7 @@ construct corresponds to the left-to-right conversion.
 
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use section" #-}
+{-# LANGUAGE InstanceSigs              #-}
 
 module Unembedding.Examples.Forall where
 import           Data.Kind       (Type)
@@ -97,9 +98,12 @@ instance Show (Ast env a) where
   showsPrec k (Inst e _) = showParen (k > 9) $ showString "Inst " . showsPrec 10 e
 
 
-instance LiftVariables UE.Ix Ast where
+instance LiftVariables Ast where
+  type Var Ast = UE.Ix
   liftVar = Var
 
+data P (f :: T ~> T) (r :: T) where
+  MkP :: forall f a. Proxy a -> P f (f @@ a)
 instance L (UE.EnvI Ast) where
   lam = UE.liftSOn (ol1 :. End) Lam
 
@@ -108,8 +112,10 @@ instance L (UE.EnvI Ast) where
 
   inst a p = UE.liftFO1 (flip Inst p) a
 
-  -- Currently, unembedding does not provide lifting function for 'gen'
-  gen e = UE.EnvI $ \tenv -> Gen (\p -> UE.runEnvI (e p) tenv)
+  -- Little awkward
+  gen :: forall f. (forall (a :: T). Proxy a -> UE.EnvI Ast (f @@ a)) -> UE.EnvI Ast (Forall f)
+  gen e = UE.liftFOF (\arg -> Gen (arg . MkP @f)) (\(MkP p) -> e p)
+
 
 toAst :: (forall e. L e => e a) -> Ast '[] a
 toAst = UE.runClose
@@ -146,8 +152,7 @@ instance Variables Sem where
 
   weaken e = Sem $ \(UE.ECons _ xs) -> interp e xs
 
-instance LiftVariables Sem Sem where
-  liftVar = id
+instance LiftVariables Sem
 
 instance L (UE.EnvI Sem) where
  lam = UE.liftSOn (ol1 :. End) lamSem
@@ -157,8 +162,9 @@ instance L (UE.EnvI Sem) where
 
  inst a p = UE.liftFO1 (flip instSem p) a
 
-  -- Currently, unembedding does not provide lifting function for 'gen'
- gen e = UE.EnvI $ \tenv -> genSem (\p -> UE.runEnvI (e p) tenv)
+  -- Little awkward
+ gen :: forall f. (forall (a :: T). Proxy a -> UE.EnvI Sem (f @@ a)) -> UE.EnvI Sem (Forall f)
+ gen e = UE.liftFOF (\arg -> genSem (arg . MkP @f)) (\(MkP p) -> e p)
 
 interpL :: (forall e. L e => e a) -> S a
 interpL e  = interp (UE.runClose e) UE.ENil

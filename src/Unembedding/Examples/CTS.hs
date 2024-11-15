@@ -124,8 +124,7 @@ instance Variables CTS where
       f' (ECons _ e) = f e
       tr' (ECons _ de, c) = tr (de, c)
 
-instance LiftVariables CTS CTS where
-  liftVar = id
+instance LiftVariables CTS where
 
 -- The purpose of this term is to be able to run a CTS term without the existentially qualified c
 newtype Interact a b = I { runInteract :: a -> (b , Interact a b) }

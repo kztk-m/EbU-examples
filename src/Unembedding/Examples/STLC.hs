@@ -67,8 +67,7 @@ instance Variables STLC where
   weaken :: STLC as a -> STLC (b ': as) a
   weaken (Sim f) = Sim (\(ECons _ env) -> f env)
 
-instance LiftVariables STLC STLC where
-  liftVar = id
+instance LiftVariables STLC
 
 -- Step 2: Prepare semantic functions for each construct
 -- -----------------------------------------------------------------------------
