@@ -11,7 +11,7 @@ common deps
         base >= 4.12 && < 5,
         mtl ^>= 2.2 || ^>= 2.3,
         containers ^>= 0.6,
-        embedding-by-unembedding ^>= 0.6, 
+        embedding-by-unembedding ^>= 0.6 || ^>=0.7, 
         defun-core
 
     default-language: Haskell2010

@@ -6,6 +6,8 @@ packages:
 extra-deps:
 - defun-core-0.1
 - git: https://github.com/kztk-m/EbU.git
-  commit: 90c6ff890cca3d4836fa6c027aeb6f284f56ed84
+  commit: c483f604e81fe0aef66b0779ac13ea4774a476b7
+
+
 allow-newer: true
 allow-newer-deps: [defun-core]
