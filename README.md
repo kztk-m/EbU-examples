@@ -1,3 +1,6 @@
+*The contents of this repository have been merged into <https://github.com/kztk-m/EbU>. This repository will no longer be maintained.*
+
+
 Examples for Embedding by Unembedding
 =====================================
 
